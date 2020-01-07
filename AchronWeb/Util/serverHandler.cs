@@ -151,6 +151,51 @@ namespace Networking
                         }
                     }
 
+                    /*  NOTE: This code allows the matchmaking server to display the number of players in games.
+                        However it is currently untested.
+                        Uncomment at your own risk. */
+                    /*
+                    ///Game status update.
+                    ///Ox910O - appears to be the gameID
+                    ///Ox411c - list of players in the game
+                    ///Ox50fa - no idea?
+                    ///OxO04O - SSID / Key
+                    else if (argList.ContainsKey("Ox910O") && argList.ContainsKey("Ox411c") && argList.ContainsKey("Ox50fa") && argList.ContainsKey("OxO04O"))
+                    {
+                        AchronWeb.features.achronClient user = AchronWeb.features.consts.getUser(argList["OxO04O"]);
+
+                        if (user == null) { break; }
+                        else
+                        {
+                            lock (AchronWeb.features.consts.gameList)
+                            {
+                                foreach (KeyValuePair<long, AchronWeb.features.achronGame> game in AchronWeb.features.consts.gameList)
+                                {
+                                    if (game.Value.ownerSESSID == user.SESSID && game.Key.ToString() == argList["Ox910O"])
+                                    {
+                                        //Game status update.
+                                        game.Value.lastUpdate = AchronWeb.features.consts.GetTime();
+
+                                        string[] players = argList["Ox411c"].Split(',');
+                                        int maxPlayers = players.Length;
+                                        int currentPlayers = 0;
+                                        foreach (string player in players)
+                                        {
+                                            if (player != " ")
+                                            {
+                                                currentPlayers++;
+                                            }
+                                        }
+
+                                        game.Value.maxPlayers = maxPlayers;
+                                        game.Value.currentPlayers = currentPlayers;
+                                        Console.WriteLine("GAME " + game.Key + " updated. (" + game.Value.currentPlayers + "/" + game.Value.maxPlayers + ")");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    */
                     else
                     {
                         try
@@ -170,7 +215,29 @@ namespace Networking
                         }
                         catch
                         {
-                            Console.WriteLine("EXCEPTION THROWN [" + endPoint.ToString()  + " ]: " + Environment.NewLine + decode);
+                            Console.WriteLine("EXCEPTION THROWN [" + endPoint.ToString() + " ]: " + Environment.NewLine + decode);
+                        }
+                        finally
+                        {
+                            //probably a browser
+                            if (!decode.Contains("GET /achron_games.php"))
+                            {
+                                string reply =
+                                    "HTTP/1.1 200 OK" + Environment.NewLine + //OK, we have a valid time
+                                    "Date: Now" + Environment.NewLine + //current datetime
+                                    "Server: AchronWeb/0.0.1 (DocileDanny)" + Environment.NewLine + //server info
+                                    "X-Powered-By: C#/" + Environment.Version.ToString() + Environment.NewLine + //php info
+                                    "Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0" + Environment.NewLine + //various info about caching.
+                                    "Pragma: no-cache" + Environment.NewLine + //pragma values
+                                    "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">" + Environment.NewLine +
+                                    AchronWeb.features.consts.errorPage + Environment.NewLine; //the content itself.
+                                byte[] toSend = UTF8Encoding.UTF8.GetBytes(reply);
+                                ns.Write(toSend, 0, toSend.Length);
+                                ns.Flush();
+                                ns.Close();
+                                socket.Close();
+                                Console.WriteLine("error page sent to " + endPoint.ToString() + ".");
+                            }
                         }
                     }
                 }
