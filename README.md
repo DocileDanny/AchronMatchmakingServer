@@ -7,16 +7,16 @@ This is a server emulator that allows games to be created.
 
 Current Status:
 The server emulator works - you can create and join games.
-
-
-Games never display the correct number of players in the games.
-
+Games never display the correct number of players in the games this is cosmetic only, and games function as expected.
 Also, as far as we are aware UPnP does not work; and so all users should forward ports 7014, 7013, and 7614.
 
 How to use the server:
 1) Download the source code, and build it using Visual Studio.
 2) Alter the included file named hosts and replace 1.1.1.1 with the ip address of the server.
 3) each player will need to replace their hosts file (C:\Windows\System32\drivers\etc\hosts) with this new altered host file.
+3(a)) once the hosts file is replaced, make sure to run the following command in cmd.exe as admin: 
+ipconfig /flushdns
+this will apply the new hosts file. Alternatively, once the hosts file is replaced users may restart thier computers.
 4) the player hosting the server should ensure port 80 is forwarded, in addition to the other ports mentioned before.
 5) run the server.
 6) players may now run achron, and create a game, and join that game.
