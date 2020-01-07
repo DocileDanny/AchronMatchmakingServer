@@ -9,7 +9,7 @@ Current Status:
 The server emulator works - you can create and join games.
 
 However, games never expire; and remain listed forever.
-Additionally games never display the correct number of players in the games.
+Additionally games never display the correct number of players in the games, but this is cosmetic only, and games function as expected.
 
 Also, as far as we are aware UPnP does not work; and so all users should forward ports 7014, 7013, and 7614.
 
