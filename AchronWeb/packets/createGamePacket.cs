@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AchronWebtest.features;
+using AchronWeb.features;
 using System.Security.Cryptography;
 
-namespace AchronWebtest.packets
+namespace AchronWeb.packets
 {
     /// <summary>
     /// Respond to a registration request
@@ -41,9 +41,10 @@ namespace AchronWebtest.packets
             game.portB = 7013; //default, maybe the client will update this later?
             game.gameName = OxO2O1;
             game.host = endPoint;
-            game.lastUpdate = GetTime();
+            game.lastUpdate = consts.GetTime();
             game.level = OxO39O.Replace("%20", " ");
             game.Progress = 0; //lets assume if we are creating a game, the game is yet to start.
+            game.ownerSESSID = user.SESSID;
 
             lock (consts.gameList)
             {
@@ -93,9 +94,6 @@ namespace AchronWebtest.packets
             // Return the hexadecimal string.
             return sBuilder.ToString();
         }
-        public static long GetTime()
-        {
-            return DateTime.UtcNow.Ticks / 10000;
-        }
+
     }
 }

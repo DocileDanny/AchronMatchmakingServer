@@ -54,19 +54,7 @@ namespace Networking
                         string raw = UTF8Encoding.UTF8.GetString(dat, 0, dat.Length);
 
                         Console.WriteLine("ŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽ" + Environment.NewLine + "SERVER: " + Environment.NewLine + Environment.NewLine + raw + Environment.NewLine + Environment.NewLine);
-
-                        if (raw.Contains("Kytin"))
-                        {
-                            raw = raw.Replace("Kytin", "fakeNAME");
-
-                            byte[] toSend =
-                                UTF8Encoding.UTF8.GetBytes
-                                (
-                                    raw
-                                );
-                            dat = toSend;
-                        }
-
+                        
                         NSclient.Write(dat, 0, dat.Length);
                     }
 

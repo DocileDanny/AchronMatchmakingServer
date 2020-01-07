@@ -53,7 +53,7 @@ namespace Networking
                     if (argList.ContainsKey("OxO02O") && argList.ContainsKey("Ox7c37"))
                     {
                         Console.WriteLine("User " + argList["OxO02O"] + " connecting..");
-                        byte[] reply = AchronWebtest.packets.registerPacketA.Handle(argList["OxO02O"], argList["Ox7c37"]);
+                        byte[] reply = AchronWeb.packets.registerPacketA.Handle(argList["OxO02O"], argList["Ox7c37"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
                         ns.Close();
@@ -64,7 +64,7 @@ namespace Networking
                     else if (argList.ContainsKey("OxO02O") && argList.ContainsKey("OxO02a") && argList.ContainsKey("OxO04O"))
                     {
                         Console.WriteLine("User " + argList["OxO02O"] + " connected.");
-                        byte[] reply = AchronWebtest.packets.registerPacketB.Handle(argList["OxO02O"], argList["OxO02a"], argList["OxO04O"]);
+                        byte[] reply = AchronWeb.packets.registerPacketB.Handle(argList["OxO02O"], argList["OxO02a"], argList["OxO04O"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
                         ns.Close();
@@ -74,7 +74,7 @@ namespace Networking
                     //registration packet B (OxO02O & OxO02a & OxO04O)
                     else if (argList.ContainsKey("OxO04O") && argList.Count == 1)
                     {
-                        AchronWebtest.features.achronClient user = AchronWebtest.features.consts.getUser(argList["OxO04O"]);
+                        AchronWeb.features.achronClient user = AchronWeb.features.consts.getUser(argList["OxO04O"]);
 
                         if (user != null)
                         {
@@ -85,7 +85,7 @@ namespace Networking
                             Console.WriteLine("Check game list.. [unknown user]");
                         }
 
-                        byte[] reply = AchronWebtest.packets.viewGamesPacket.Handle(argList["OxO04O"]);
+                        byte[] reply = AchronWeb.packets.viewGamesPacket.Handle(argList["OxO04O"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
                         ns.Close();
@@ -95,7 +95,7 @@ namespace Networking
                     //createGamePacket string OxO181, string OxO2O1, string OxO21O, string OxO39O, string OxO04O
                     else if (argList.ContainsKey("OxO181") && argList.ContainsKey("OxO2O1") && argList.ContainsKey("OxO21O") && argList.ContainsKey("OxO39O") && argList.ContainsKey("OxO04O"))
                     {
-                        AchronWebtest.features.achronClient user = AchronWebtest.features.consts.getUser(argList["OxO04O"]);
+                        AchronWeb.features.achronClient user = AchronWeb.features.consts.getUser(argList["OxO04O"]);
 
                         if (user != null)
                         {
@@ -106,27 +106,72 @@ namespace Networking
                             Console.WriteLine("create game.. [unknown user]");
                         }
 
-                        byte[] reply = AchronWebtest.packets.createGamePacket.Handle(argList["OxO181"], argList["OxO2O1"], argList["OxO21O"], argList["OxO39O"], argList["OxO04O"], endPoint.Address.ToString());
+                        byte[] reply = AchronWeb.packets.createGamePacket.Handle(argList["OxO181"], argList["OxO2O1"], argList["OxO21O"], argList["OxO39O"], argList["OxO04O"], endPoint.Address.ToString());
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
                         ns.Close();
                         socket.Close();
                     }
 
+                    //Ox910O & OxO04O
+                    //Ox910O = gameID
+                    //Game is starting or ending (probably)
+                    else if (argList.ContainsKey("Ox910O") && argList.ContainsKey("OxO04O"))
+                    {
+                        AchronWeb.features.achronClient user = AchronWeb.features.consts.getUser(argList["OxO04O"]);
+
+                        if (user == null) { break; }
+                        else
+                        {
+                            lock (AchronWeb.features.consts.gameList)
+                            {
+                                Queue<long> endedGames = new Queue<long>();
+                                
+                                foreach (KeyValuePair<long, AchronWeb.features.achronGame> game in AchronWeb.features.consts.gameList)
+                                {
+                                    if (game.Value.ownerSESSID == user.SESSID && game.Key.ToString() == argList["Ox910O"])
+                                    {
+                                        //Game is ending/starting
+                                        Console.WriteLine("GAME " + game.Key + " has ended!");
+                                        game.Value.lastUpdate = AchronWeb.features.consts.GetTime();
+                                        game.Value.Progress = 1;
+                                        endedGames.Enqueue(game.Key);
+                                    }
+                                }
+
+                                if (endedGames.Count != 0)
+                                {
+                                    while (endedGames.Count != 0)
+                                    {
+                                        long id = endedGames.Dequeue();
+                                        AchronWeb.features.consts.gameList.Remove(id);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     else
                     {
-                        string packetName = "";
-                        foreach (KeyValuePair<string, string> key in argList)
+                        try
                         {
-                            packetName += key.Key + "&";
+                            string packetName = "";
+                            foreach (KeyValuePair<string, string> key in argList)
+                            {
+                                packetName += key.Key + "&";
+                            }
+                            packetName = packetName.Substring(0, packetName.Length - 1);
+                            Console.WriteLine("Unhandled request: " + packetName);
+
+                            Console.WriteLine("=============");
+                            Console.WriteLine(decode);
+                            Console.WriteLine("=============");
+                            socket.Close();
                         }
-                        packetName = packetName.Substring(0, packetName.Length - 1);
-                        Console.WriteLine("Unhandled request: " + packetName);
-                        
-                        Console.WriteLine("=============");
-                        Console.WriteLine(decode);    
-                        Console.WriteLine("=============");
-                        socket.Close();
+                        catch
+                        {
+                            Console.WriteLine("EXCEPTION THROWN [" + endPoint.ToString()  + " ]: " + Environment.NewLine + decode);
+                        }
                     }
                 }
 

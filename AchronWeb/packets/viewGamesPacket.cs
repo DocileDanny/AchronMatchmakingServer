@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AchronWebtest.features;
+using AchronWeb.features;
 using System.Security.Cryptography;
 
-namespace AchronWebtest.packets
+namespace AchronWeb.packets
 {
     /// <summary>
     /// Respond to a registration request
@@ -54,9 +54,7 @@ namespace AchronWebtest.packets
                 "Content-Length: " + content.Length.ToString() + Environment.NewLine + //how long is the content
                 "Content-Type: text/plain; charset=UTF-8" + Environment.NewLine + Environment.NewLine + //what is the content
                 content + Environment.NewLine; //the content itself.
-
-            Console.WriteLine("content: " + content);
-
+            
             return UTF8Encoding.UTF8.GetBytes(reply);
         }
 
@@ -80,10 +78,6 @@ namespace AchronWebtest.packets
 
             // Return the hexadecimal string.
             return sBuilder.ToString();
-        }
-        public static long GetTime()
-        {
-            return DateTime.UtcNow.Ticks / 10000;
         }
     }
 }

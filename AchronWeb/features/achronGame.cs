@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AchronWebtest.features
+namespace AchronWeb.features
 {
     /// <summary>
     /// Information about a connected client.
@@ -65,5 +65,10 @@ namespace AchronWebtest.features
         /// 0 = game waiting, 1 = game in progress.
         /// </summary>
         public int Progress = 0;
+
+        /// <summary>
+        /// The hash of the user who owns this game.
+        /// </summary>
+        public string ownerSESSID = "";
     }
 }

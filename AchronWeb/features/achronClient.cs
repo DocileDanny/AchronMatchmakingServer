@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AchronWebtest.features
+namespace AchronWeb.features
 {
     /// <summary>
     /// Information about a connected client.

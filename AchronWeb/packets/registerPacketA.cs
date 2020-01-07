@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AchronWebtest.features;
+using AchronWeb.features;
 using System.Security.Cryptography;
 
-namespace AchronWebtest.packets
+namespace AchronWeb.packets
 {
     /// <summary>
     /// Respond to a registration request
@@ -25,7 +25,7 @@ namespace AchronWebtest.packets
             //create a new client to represent this user.
             achronClient client = new achronClient();
             client.username = xO02O;
-            client.firstSeen = GetTime();
+            client.firstSeen = consts.GetTime();
             client.lastSeen = client.firstSeen;
 
             //generate a session ID
@@ -38,7 +38,7 @@ namespace AchronWebtest.packets
             string content = 
                 client.SESSID + @"\\" + //SessID / unique ID
                 client.username +  //username
-                "5e1355173f1786." + GetTime() +  //no idea what this is about
+                "5e1355173f1786." + consts.GetTime() +  //no idea what this is about
                 @"\\1.7.0.0"; //the client version
 
             consts.clientList.Add(client.SESSID, client);
@@ -79,11 +79,6 @@ namespace AchronWebtest.packets
 
             // Return the hexadecimal string.
             return sBuilder.ToString();
-        }
-
-        public static long GetTime()
-        {
-            return DateTime.UtcNow.Ticks / 10000;
         }
     }
 }

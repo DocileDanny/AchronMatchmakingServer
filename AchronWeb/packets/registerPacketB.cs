@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AchronWebtest.features;
+using AchronWeb.features;
 using System.Security.Cryptography;
 
-namespace AchronWebtest.packets
+namespace AchronWeb.packets
 {
     /// <summary>
     /// Respond to a registration request
@@ -79,10 +79,6 @@ OK
 
             // Return the hexadecimal string.
             return sBuilder.ToString();
-        }
-        public static long GetTime()
-        {
-            return DateTime.UtcNow.Ticks / 10000;
         }
     }
 }
