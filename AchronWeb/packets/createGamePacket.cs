@@ -68,7 +68,7 @@ namespace AchronWeb.packets
                 "Pragma: no-cache" + Environment.NewLine + //pragma values
                 "Content-Length: " + content.Length.ToString() + Environment.NewLine + //how long is the content
                 "Content-Type: text/plain; charset=UTF-8" + Environment.NewLine + Environment.NewLine + //what is the content
-                content + Environment.NewLine; //the content itself.
+                content + " " + Environment.NewLine; //the content itself.
 
             return UTF8Encoding.UTF8.GetBytes(reply);
         }

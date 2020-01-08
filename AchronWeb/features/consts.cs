@@ -85,9 +85,9 @@ If you are attempting to access achrongame.com, and you have configured your hos
 
                     foreach (KeyValuePair<string, achronClient> client in clientList)
                     {
-                        if (GetTime() - client.Value.lastSeen > (600000*3))
+                        if (GetTime() - client.Value.lastSeen > (600000*6))
                         {
-                            //time out this user after 30 mins
+                            //time out this user after 60 mins
                             deadUsers.Enqueue(client.Key);
                             Console.WriteLine(client.Value.username + " (" + client.Value.SESSID + ") timed out!");
                         }
@@ -106,9 +106,9 @@ If you are attempting to access achrongame.com, and you have configured your hos
 
                     foreach (KeyValuePair<long, achronGame> game in gameList)
                     {
-                        if (GetTime() - game.Value.lastUpdate > (600000 * 3))
+                        if (GetTime() - game.Value.lastUpdate > (600000))
                         {
-                            //time out this game after 30 mins
+                            //time out this game after 10 mins
                             deadGame.Enqueue(game.Key);
                             Console.WriteLine("Game " + game.Value.gameID + " timed out!");
                         }

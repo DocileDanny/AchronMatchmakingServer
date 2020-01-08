@@ -23,13 +23,14 @@ namespace Networking
         //handle this client
         public void start()
         {
+            NetworkStream ns = socket.GetStream();
+
             while (socket.Connected)
             {
 
                 //we have data to handle!
                 if (socket.Available != 0)
                 {
-                    NetworkStream ns = socket.GetStream();
                     byte[] data = new byte[socket.Available];
                     ns.Read(data, 0, socket.Available);
                     string decode = UTF8Encoding.UTF8.GetString(data, 0, data.Length);
@@ -56,8 +57,6 @@ namespace Networking
                         byte[] reply = AchronWeb.packets.registerPacketA.Handle(argList["OxO02O"], argList["Ox7c37"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
-                        ns.Close();
-                        socket.Close();
                     }
 
                     //registration packet B (OxO02O & OxO02a & OxO04O)
@@ -67,8 +66,6 @@ namespace Networking
                         byte[] reply = AchronWeb.packets.registerPacketB.Handle(argList["OxO02O"], argList["OxO02a"], argList["OxO04O"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
-                        ns.Close();
-                        socket.Close();
                     }
 
                     //registration packet B (OxO02O & OxO02a & OxO04O)
@@ -88,8 +85,6 @@ namespace Networking
                         byte[] reply = AchronWeb.packets.viewGamesPacket.Handle(argList["OxO04O"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
-                        ns.Close();
-                        socket.Close();
                     }
 
                     //createGamePacket string OxO181, string OxO2O1, string OxO21O, string OxO39O, string OxO04O
@@ -109,20 +104,24 @@ namespace Networking
                         byte[] reply = AchronWeb.packets.createGamePacket.Handle(argList["OxO181"], argList["OxO2O1"], argList["OxO21O"], argList["OxO39O"], argList["OxO04O"], endPoint.Address.ToString());
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
-                        ns.Close();
-                        socket.Close();
                     }
 
+                    //This code doesn't work as expected at all.
                     //Ox910O & OxO04O
                     //Ox910O = gameID
-                    //Game is starting or ending (probably)
+                    //Game is starting or ending (probably) - note: also fires when game is joined =/
+                    /*
                     else if (argList.ContainsKey("Ox910O") && argList.ContainsKey("OxO04O"))
                     {
                         AchronWeb.features.achronClient user = AchronWeb.features.consts.getUser(argList["OxO04O"]);
 
-                        if (user == null) { break; }
+                        
+
+                        if (user == null) { Console.WriteLine("nullUSER: " + decode); break; }
                         else
                         {
+                            Console.WriteLine(user.username + ": " + decode);
+
                             lock (AchronWeb.features.consts.gameList)
                             {
                                 Queue<long> endedGames = new Queue<long>();
@@ -133,6 +132,7 @@ namespace Networking
                                     {
                                         //Game is ending/starting
                                         Console.WriteLine("GAME " + game.Key + " has ended!");
+                                        Console.WriteLine("CONTENT: " + decode);
                                         game.Value.lastUpdate = AchronWeb.features.consts.GetTime();
                                         game.Value.Progress = 1;
                                         endedGames.Enqueue(game.Key);
@@ -150,16 +150,14 @@ namespace Networking
                             }
                         }
                     }
+                    */
 
-                    /*  NOTE: This code allows the matchmaking server to display the number of players in games.
-                        However it is currently untested.
-                        Uncomment at your own risk. */
-                    /*
                     ///Game status update.
                     ///Ox910O - appears to be the gameID
                     ///Ox411c - list of players in the game
                     ///Ox50fa - no idea?
                     ///OxO04O - SSID / Key
+                    /* For some reason, our server never causes this to be sent - so it is completely unhandled.
                     else if (argList.ContainsKey("Ox910O") && argList.ContainsKey("Ox411c") && argList.ContainsKey("Ox50fa") && argList.ContainsKey("OxO04O"))
                     {
                         AchronWeb.features.achronClient user = AchronWeb.features.consts.getUser(argList["OxO04O"]);
@@ -196,6 +194,7 @@ namespace Networking
                         }
                     }
                     */
+
                     else
                     {
                         try
