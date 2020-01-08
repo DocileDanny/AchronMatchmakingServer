@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Networking;
+using Util;
 
 namespace AchronWeb
 {
@@ -11,10 +12,23 @@ namespace AchronWeb
     {
         static void Main(string[] args)
         {
-            WebServer wsf = new WebServer(80,false,false);
+            Terminal.WriteTitle( new string[] { "Achron Matchmaking Service", "v0.1", "By DocileDanny" } );
 
-            System.Threading.Thread checkThread = new System.Threading.Thread(features.consts.TimeoutChecker);
-            checkThread.Start();
+            try
+            {
+                WebServer wsf = new WebServer(80, false, false);
+
+                System.Threading.Thread checkThread = new System.Threading.Thread(features.consts.TimeoutChecker);
+                checkThread.Start();
+
+                Terminal.WriteLine(TerminalState.OK, "Server", "Service Started.");
+            }
+            catch (Exception ex)
+            {
+                Terminal.WriteLine(TerminalState.FAIL, "Server", "Unable to start the service: " + ex.ToString());
+                Console.ReadLine();
+                return;
+            }
 
             while (true)
             {
