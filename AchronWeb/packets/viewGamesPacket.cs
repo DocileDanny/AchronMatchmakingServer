@@ -55,7 +55,6 @@ namespace AchronWeb.packets
                 "Content-Type: text/plain; charset=UTF-8" + Environment.NewLine + Environment.NewLine + //what is the content
                 content + Environment.NewLine; //the content itself.
 
-            Console.WriteLine("CONTENT: " + reply);
             return UTF8Encoding.UTF8.GetBytes(reply);
         }
 

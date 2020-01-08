@@ -114,6 +114,15 @@ namespace Networking
                         socket.Close();
                     }
 
+                    else if (argList.ContainsKey("Ox910O") && argList.ContainsKey("OxO04O"))
+                    {
+                        byte[] reply = AchronWeb.packets.okPacket.Handle();
+                        ns.Write(reply, 0, reply.Length);
+                        ns.Flush();
+                        ns.Close();
+                        socket.Close();
+                    }
+
                     //This code doesn't work as expected at all.
                     //Ox910O & OxO04O
                     //Ox910O = gameID

@@ -47,6 +47,7 @@
     <Compile Include="features\achronGame.cs" />
     <Compile Include="features\consts.cs" />
     <Compile Include="packets\createGamePacket.cs" />
+    <Compile Include="packets\okPacket.cs" />
     <Compile Include="packets\registerPacketA.cs" />
     <Compile Include="packets\registerPacketB.cs" />
     <Compile Include="packets\viewGamesPacket.cs" />
