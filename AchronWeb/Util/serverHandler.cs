@@ -57,6 +57,8 @@ namespace Networking
                         byte[] reply = AchronWeb.packets.registerPacketA.Handle(argList["OxO02O"], argList["Ox7c37"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
+                        ns.Close();
+                        socket.Close();
                     }
 
                     //registration packet B (OxO02O & OxO02a & OxO04O)
@@ -66,6 +68,8 @@ namespace Networking
                         byte[] reply = AchronWeb.packets.registerPacketB.Handle(argList["OxO02O"], argList["OxO02a"], argList["OxO04O"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
+                        ns.Close();
+                        socket.Close();
                     }
 
                     //registration packet B (OxO02O & OxO02a & OxO04O)
@@ -85,6 +89,8 @@ namespace Networking
                         byte[] reply = AchronWeb.packets.viewGamesPacket.Handle(argList["OxO04O"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
+                        ns.Close();
+                        socket.Close();
                     }
 
                     //createGamePacket string OxO181, string OxO2O1, string OxO21O, string OxO39O, string OxO04O
@@ -104,6 +110,8 @@ namespace Networking
                         byte[] reply = AchronWeb.packets.createGamePacket.Handle(argList["OxO181"], argList["OxO2O1"], argList["OxO21O"], argList["OxO39O"], argList["OxO04O"], endPoint.Address.ToString());
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
+                        ns.Close();
+                        socket.Close();
                     }
 
                     //This code doesn't work as expected at all.
@@ -210,6 +218,8 @@ namespace Networking
                             Console.WriteLine("=============");
                             Console.WriteLine(decode);
                             Console.WriteLine("=============");
+
+                            ns.Close();
                             socket.Close();
                         }
                         catch
@@ -242,6 +252,8 @@ namespace Networking
                 }
 
             }
+
+            Console.WriteLine("[Socket " + endPoint.ToString() + " closed]");
         }
     }
 }
