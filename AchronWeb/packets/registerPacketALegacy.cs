@@ -11,16 +11,16 @@ namespace AchronWeb.packets
     /// <summary>
     /// Respond to a registration request
     /// </summary>
-    public static class registerPacketA
+    public static class registerPacketALegacy
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="xO02O">username</param>
         /// <param name="x7c37">steamID???</param>
-        public static byte[] Handle(string xO02O, string x7c37)
+        public static byte[] Handle(string xO02O, string xO02a)
         {
-            //for now, we can ignore x7c37? assuming it is to do with verifying with steam; which we don't actually care about.
+            //Not sure what xO02a is for at this time.
 
             //create a new client to represent this user.
             achronClient client = new achronClient();
@@ -35,15 +35,12 @@ namespace AchronWeb.packets
                 client.SESSID = hash;
             }
 
-            string content = 
-                client.SESSID + @"\\" + //SessID / unique ID
-                client.username +  //username
-                "5e1355173f1786." + consts.GetTime() +  //no idea what this is about
-                @"\\1.7.0.0"; //the client version
+            string content =
+                client.SESSID + @"OK"; //the client version
 
             consts.clientList.Add(client.SESSID, client);
 
-            string reply = 
+            string reply =
                 "HTTP/1.1 200 OK" + "\r\n" + //OK, we have a valid time
                 "Date: Now" + "\r\n" + //current datetime
                 "Server: AchronWeb/0.0.1 (DocileDanny)" + "\r\n" + //server info
@@ -55,7 +52,7 @@ namespace AchronWeb.packets
                 "Content-Length: " + content.Length.ToString() + "\r\n" + //how long is the content
                 "Content-Type: text/plain; charset=UTF-8" + "\r\n" + "\r\n" + //what is the content
                 content + "\r\n"; //the content itself.
-            
+
             return UTF8Encoding.UTF8.GetBytes(reply);
         }
 

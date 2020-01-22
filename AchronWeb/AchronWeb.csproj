@@ -49,6 +49,7 @@
     <Compile Include="packets\createGamePacket.cs" />
     <Compile Include="packets\okPacket.cs" />
     <Compile Include="packets\registerPacketA.cs" />
+    <Compile Include="packets\registerPacketALegacy.cs" />
     <Compile Include="packets\registerPacketB.cs" />
     <Compile Include="packets\viewGamesPacket.cs" />
     <Compile Include="Program.cs" />

@@ -53,7 +53,7 @@ namespace Networking
 
                         string raw = UTF8Encoding.UTF8.GetString(dat, 0, dat.Length);
 
-                        Console.WriteLine("ŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽ" + Environment.NewLine + "SERVER: " + Environment.NewLine + Environment.NewLine + raw + Environment.NewLine + Environment.NewLine);
+                        Console.WriteLine("ŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽ" + "\r\n" + "SERVER: " + "\r\n" + "\r\n" + raw + "\r\n" + "\r\n");
                         
                         NSclient.Write(dat, 0, dat.Length);
                     }
@@ -67,7 +67,7 @@ namespace Networking
 
                         string raw = UTF8Encoding.UTF8.GetString(dat, 0, dat.Length);
 
-                        Console.WriteLine("ŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽ" + Environment.NewLine + "CLIENT: " + Environment.NewLine + Environment.NewLine + raw + Environment.NewLine + Environment.NewLine);
+                        Console.WriteLine("ŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽŽ" + "\r\n" + "CLIENT: " + "\r\n" + "\r\n" + raw + "\r\n" + "\r\n");
 
                         NSserv.Write(dat, 0, dat.Length);
                     }
@@ -95,27 +95,27 @@ namespace Networking
                         //working = s.Replace("/png", ".png");
                         working = s.Replace("Client.Assets.", "");
                         Console.WriteLine(working);
-                        answerString += "<p><a href=\"" + "/" + working + "\">" + s + "</a></p>" + Environment.NewLine;
+                        answerString += "<p><a href=\"" + "/" + working + "\">" + s + "</a></p>" + "\r\n";
                     }
 
 
                     byte[] toSend =
                         System.Text.UTF8Encoding.UTF8.GetBytes
                         (
-                            "HTTP/1.1 200 Okey-Day" + Environment.NewLine +
-                            "Server: Faith" + Environment.NewLine +
-                            Environment.NewLine +
+                            "HTTP/1.1 200 Okey-Day" + "\r\n" +
+                            "Server: Faith" + "\r\n" +
+                            "\r\n" +
 
-                            "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">" + Environment.NewLine +
-                            "<html>" + Environment.NewLine +
-                            "<head>" + Environment.NewLine +
-                            "   <title>Faith Internal Asset Access</title>" + Environment.NewLine +
-                            "</head>" + Environment.NewLine +
-                            "<body>" + Environment.NewLine +
-                            "   <h1>Faith Internal Asset Access</h1>" + Environment.NewLine +
-                            "   <p>Please select a file to view (" + requestCount + " request(s) have been handled.)</p>" + Environment.NewLine + answerString +
-                            "</body>" + Environment.NewLine +
-                            "</html>" + Environment.NewLine
+                            "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">" + "\r\n" +
+                            "<html>" + "\r\n" +
+                            "<head>" + "\r\n" +
+                            "   <title>Faith Internal Asset Access</title>" + "\r\n" +
+                            "</head>" + "\r\n" +
+                            "<body>" + "\r\n" +
+                            "   <h1>Faith Internal Asset Access</h1>" + "\r\n" +
+                            "   <p>Please select a file to view (" + requestCount + " request(s) have been handled.)</p>" + "\r\n" + answerString +
+                            "</body>" + "\r\n" +
+                            "</html>" + "\r\n"
                         );
 
                     ns.Write(toSend, 0, toSend.Length);
@@ -136,10 +136,10 @@ namespace Networking
                         byte[] toSend =
                             System.Text.UTF8Encoding.UTF8.GetBytes
                             (
-                                "HTTP/1.1 200 OKAY" + Environment.NewLine +
-                                "Server: Faith" + Environment.NewLine +
-                                "Cake: Is a lie" + Environment.NewLine +
-                                Environment.NewLine
+                                "HTTP/1.1 200 OKAY" + "\r\n" +
+                                "Server: Faith" + "\r\n" +
+                                "Cake: Is a lie" + "\r\n" +
+                                "\r\n"
                             );
 
                         ns.Write(toSend, 0, toSend.Length);
@@ -159,20 +159,20 @@ namespace Networking
                         byte[] toSend =
                             System.Text.UTF8Encoding.UTF8.GetBytes
                             (
-                                "HTTP/1.1 404 Not Found" + Environment.NewLine +
-                                "Server: Faith" + Environment.NewLine +
-                                Environment.NewLine +
+                                "HTTP/1.1 404 Not Found" + "\r\n" +
+                                "Server: Faith" + "\r\n" +
+                                "\r\n" +
 
-                                "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">" + Environment.NewLine +
-                                "<html>" + Environment.NewLine +
-                                "<head>" + Environment.NewLine +
-                                "   <title>Faith Internal Asset Access</title>" + Environment.NewLine +
-                                "</head>" + Environment.NewLine +
-                                "<body>" + Environment.NewLine +
-                                "   <h1>404</h1>" + Environment.NewLine +
-                                "   <p>Request asset not found</p>" + Environment.NewLine +
-                                "</body>" + Environment.NewLine +
-                                "</html>" + Environment.NewLine
+                                "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">" + "\r\n" +
+                                "<html>" + "\r\n" +
+                                "<head>" + "\r\n" +
+                                "   <title>Faith Internal Asset Access</title>" + "\r\n" +
+                                "</head>" + "\r\n" +
+                                "<body>" + "\r\n" +
+                                "   <h1>404</h1>" + "\r\n" +
+                                "   <p>Request asset not found</p>" + "\r\n" +
+                                "</body>" + "\r\n" +
+                                "</html>" + "\r\n"
                             );
 
                         ns.Write(toSend, 0, toSend.Length);
@@ -197,20 +197,20 @@ namespace Networking
                             byte[] toSend =
                                 UTF8Encoding.UTF8.GetBytes
                                 (
-                                    "HTTP/1.1 501 Not Implemented" + Environment.NewLine +
-                                    "Server: Faith" + Environment.NewLine +
-                                    Environment.NewLine +
+                                    "HTTP/1.1 501 Not Implemented" + "\r\n" +
+                                    "Server: Faith" + "\r\n" +
+                                    "\r\n" +
 
-                                    "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">" + Environment.NewLine +
-                                    "<html>" + Environment.NewLine +
-                                    "<head>" + Environment.NewLine +
-                                    "   <title>501 Not Implemented</title>" + Environment.NewLine +
-                                    "</head>" + Environment.NewLine +
-                                    "<body>" + Environment.NewLine +
-                                    "   <h1>501 Not Implemented</h1>" + Environment.NewLine +
-                                    "   <p>This basic webserver is unable to handle this type of request.</p>" + Environment.NewLine +
-                                    "</body>" + Environment.NewLine +
-                                    "</html>" + Environment.NewLine
+                                    "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">" + "\r\n" +
+                                    "<html>" + "\r\n" +
+                                    "<head>" + "\r\n" +
+                                    "   <title>501 Not Implemented</title>" + "\r\n" +
+                                    "</head>" + "\r\n" +
+                                    "<body>" + "\r\n" +
+                                    "   <h1>501 Not Implemented</h1>" + "\r\n" +
+                                    "   <p>This basic webserver is unable to handle this type of request.</p>" + "\r\n" +
+                                    "</body>" + "\r\n" +
+                                    "</html>" + "\r\n"
                                 );
                             
                             ns.Write(toSend, 0, toSend.Length);

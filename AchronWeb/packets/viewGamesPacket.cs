@@ -39,21 +39,21 @@ namespace AchronWeb.packets
                     game.Value.portB + @"\" +
                     "" + @"\" + //not sure what this value is for.
                     game.Value.Progress + @"\" +
-                    game.Value.gamePlayerHost + Environment.NewLine;
+                    game.Value.gamePlayerHost + "\r\n";
             }
 
             string reply =
-                "HTTP/1.1 200 OK" + Environment.NewLine + //OK, we have a valid time
-                "Date: Now" + Environment.NewLine + //current datetime
-                "Server: AchronWeb/0.0.1 (DocileDanny)" + Environment.NewLine + //server info
-                "X-Powered-By: C#/" + Environment.Version.ToString() + Environment.NewLine + //php info
-                                                                                             //"Set-Cookie: PHPSESSID=" + client.SESSID + "; path=/" + Environment.NewLine + //set the sessid cookie
-                                                                                             //"Expires: Thu, 19 Nov 1981 08:52:00 GMT" + Environment.NewLine + //when the cookie expires
-                "Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0" + Environment.NewLine + //various info about caching.
-                "Pragma: no-cache" + Environment.NewLine + //pragma values
-                "Content-Length: " + content.Length.ToString() + Environment.NewLine + //how long is the content
-                "Content-Type: text/plain; charset=UTF-8" + Environment.NewLine + Environment.NewLine + //what is the content
-                content + Environment.NewLine; //the content itself.
+                "HTTP/1.1 200 OK" + "\r\n" + //OK, we have a valid time
+                "Date: Now" + "\r\n" + //current datetime
+                "Server: AchronWeb/0.0.1 (DocileDanny)" + "\r\n" + //server info
+                "X-Powered-By: C#/" + Environment.Version.ToString() + "\r\n" + //php info
+                                                                                             //"Set-Cookie: PHPSESSID=" + client.SESSID + "; path=/" + "\r\n" + //set the sessid cookie
+                                                                                             //"Expires: Thu, 19 Nov 1981 08:52:00 GMT" + "\r\n" + //when the cookie expires
+                "Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0" + "\r\n" + //various info about caching.
+                "Pragma: no-cache" + "\r\n" + //pragma values
+                "Content-Length: " + content.Length.ToString() + "\r\n" + //how long is the content
+                "Content-Type: text/plain; charset=UTF-8" + "\r\n" + "\r\n" + //what is the content
+                content + "\r\n"; //the content itself.
 
             return UTF8Encoding.UTF8.GetBytes(reply);
         }

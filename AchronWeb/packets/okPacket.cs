@@ -26,16 +26,16 @@ namespace AchronWeb.packets
             //xO040 is probably to do with the steam verification process.
 
             string reply =
-                "HTTP/1.1 200 OK" + Environment.NewLine + //OK, we have a valid time
-                "Date: Now" + Environment.NewLine + //current datetime
-                "Server: AchronWeb/0.0.1 (DocileDanny)" + Environment.NewLine + //server info
-                "X-Powered-By: C#/" + Environment.Version.ToString() + Environment.NewLine + //php info
-                                                                                             //"Set-Cookie: PHPSESSID=" + client.SESSID + "; path=/" + Environment.NewLine + //set the sessid cookie
-                                                                                             //"Expires: Thu, 19 Nov 1981 08:52:00 GMT" + Environment.NewLine + //when the cookie expires
-                "Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0" + Environment.NewLine + //various info about caching.
-                "Pragma: no-cache" + Environment.NewLine + //pragma values
-                "Content-Length: 0" + Environment.NewLine + //how long is the content
-                "Content-Type: text/plain; charset=UTF-8" + Environment.NewLine + Environment.NewLine; //what is the content
+                "HTTP/1.1 200 OK" + "\r\n" + //OK, we have a valid time
+                "Date: Now" + "\r\n" + //current datetime
+                "Server: AchronWeb/0.0.1 (DocileDanny)" + "\r\n" + //server info
+                "X-Powered-By: C#/" + Environment.Version.ToString() + "\r\n" + //php info
+                                                                                             //"Set-Cookie: PHPSESSID=" + client.SESSID + "; path=/" + "\r\n" + //set the sessid cookie
+                                                                                             //"Expires: Thu, 19 Nov 1981 08:52:00 GMT" + "\r\n" + //when the cookie expires
+                "Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0" + "\r\n" + //various info about caching.
+                "Pragma: no-cache" + "\r\n" + //pragma values
+                "Content-Length: 0" + "\r\n" + //how long is the content
+                "Content-Type: text/plain; charset=UTF-8" + "\r\n" + "\r\n"; //what is the content
 
             return UTF8Encoding.UTF8.GetBytes(reply);
         }

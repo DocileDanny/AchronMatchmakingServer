@@ -64,7 +64,7 @@ namespace Util
 
                 Console.ForegroundColor = ConsoleColor.White;
                 Write(msgContent.ToUpper());
-                Write(Environment.NewLine);
+                Write("\r\n");
             }
 
         }

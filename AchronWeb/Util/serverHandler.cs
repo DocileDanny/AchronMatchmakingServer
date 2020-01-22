@@ -34,6 +34,8 @@ namespace Networking
                     byte[] data = new byte[socket.Available];
                     ns.Read(data, 0, socket.Available);
                     string decode = UTF8Encoding.UTF8.GetString(data, 0, data.Length);
+
+
                     string[] DataPackets = decode.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 
                     string[] args = DataPackets[0].Split(new char[] {' ', '?', '&' });
@@ -53,21 +55,35 @@ namespace Networking
                     //registration packet A (OxO02O & Ox7c37)
                     if (argList.ContainsKey("OxO02O") && argList.ContainsKey("Ox7c37"))
                     {
-                        Console.WriteLine("User " + argList["OxO02O"] + " connecting..");
+                        Console.WriteLine("[STEAM-CLIENT] User " + argList["OxO02O"] + " connecting..");
                         byte[] reply = AchronWeb.packets.registerPacketA.Handle(argList["OxO02O"], argList["Ox7c37"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
+                        System.Threading.Thread.Sleep(500);
+                        ns.Close();
+                        socket.Close();
+                    }
+
+                    //registration packet A legacy (OxO02O & OxO02a)
+                    else if (argList.ContainsKey("OxO02O") && argList.ContainsKey("OxO02a") && !argList.ContainsKey("OxO04O"))
+                    {
+                        Console.WriteLine("[WEB-CLIENT] User " + argList["OxO02O"] + " connecting..");
+                        byte[] reply = AchronWeb.packets.registerPacketA.Handle(argList["OxO02O"], argList["OxO02a"]);
+                        ns.Write(reply, 0, reply.Length);
+                        ns.Flush();
+                        System.Threading.Thread.Sleep(500);
                         ns.Close();
                         socket.Close();
                     }
 
                     //registration packet B (OxO02O & OxO02a & OxO04O)
-                    else if (argList.ContainsKey("OxO02O") && argList.ContainsKey("OxO02a") && argList.ContainsKey("OxO04O"))
+                            else if (argList.ContainsKey("OxO02O") && argList.ContainsKey("OxO02a") && argList.ContainsKey("OxO04O"))
                     {
                         Console.WriteLine("User " + argList["OxO02O"] + " connected.");
                         byte[] reply = AchronWeb.packets.registerPacketB.Handle(argList["OxO02O"], argList["OxO02a"], argList["OxO04O"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
+                        System.Threading.Thread.Sleep(500);
                         ns.Close();
                         socket.Close();
                     }
@@ -89,6 +105,7 @@ namespace Networking
                         byte[] reply = AchronWeb.packets.viewGamesPacket.Handle(argList["OxO04O"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
+                        System.Threading.Thread.Sleep(500);
                         ns.Close();
                         socket.Close();
                     }
@@ -110,6 +127,7 @@ namespace Networking
                         byte[] reply = AchronWeb.packets.createGamePacket.Handle(argList["OxO181"], argList["OxO2O1"], argList["OxO21O"], argList["OxO39O"], argList["OxO04O"], endPoint.Address.ToString());
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
+                        System.Threading.Thread.Sleep(500);
                         ns.Close();
                         socket.Close();
                     }
@@ -119,6 +137,7 @@ namespace Networking
                         byte[] reply = AchronWeb.packets.okPacket.Handle();
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
+                        System.Threading.Thread.Sleep(500);
                         ns.Close();
                         socket.Close();
                     }
@@ -233,7 +252,7 @@ namespace Networking
                         }
                         catch
                         {
-                            Console.WriteLine("EXCEPTION THROWN [" + endPoint.ToString() + " ]: " + Environment.NewLine + decode);
+                            Console.WriteLine("EXCEPTION THROWN [" + endPoint.ToString() + " ]: " + "\r\n" + decode);
                         }
                         finally
                         {
@@ -241,17 +260,18 @@ namespace Networking
                             if (!decode.Contains("GET /achron_games.php"))
                             {
                                 string reply =
-                                    "HTTP/1.1 200 OK" + Environment.NewLine + //OK, we have a valid time
-                                    "Date: Now" + Environment.NewLine + //current datetime
-                                    "Server: AchronWeb/0.0.1 (DocileDanny)" + Environment.NewLine + //server info
-                                    "X-Powered-By: C#/" + Environment.Version.ToString() + Environment.NewLine + //php info
-                                    "Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0" + Environment.NewLine + //various info about caching.
-                                    "Pragma: no-cache" + Environment.NewLine + //pragma values
-                                    "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">" + Environment.NewLine +
-                                    AchronWeb.features.consts.errorPage + Environment.NewLine; //the content itself.
+                                    "HTTP/1.1 200 OK" + "\r\n" + //OK, we have a valid time
+                                    "Date: Now" + "\r\n" + //current datetime
+                                    "Server: AchronWeb/0.0.1 (DocileDanny)" + "\r\n" + //server info
+                                    "X-Powered-By: C#/" + Environment.Version.ToString() + "\r\n" + //php info
+                                    "Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0" + "\r\n" + //various info about caching.
+                                    "Pragma: no-cache" + "\r\n" + //pragma values
+                                    "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">" + "\r\n" +
+                                    AchronWeb.features.consts.errorPage + "\r\n"; //the content itself.
                                 byte[] toSend = UTF8Encoding.UTF8.GetBytes(reply);
                                 ns.Write(toSend, 0, toSend.Length);
                                 ns.Flush();
+                                System.Threading.Thread.Sleep(500);
                                 ns.Close();
                                 socket.Close();
                                 Console.WriteLine("error page sent to " + endPoint.ToString() + ".");
