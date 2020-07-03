@@ -11,7 +11,7 @@ Games never display the correct number of players in the games this is cosmetic 
 Also, as far as we are aware UPnP does not work; and so all users should forward ports 7014, 7013, and 7614.
 
 How to use the server:
-1) Download the source code, and build it using Visual Studio.
+1) Download the source code, and build it using Visual Studio. (or download one of the packages from the release page)
 2) Alter the included file named hosts and replace 1.1.1.1 with the ip address of the server.
 3) each player will need to replace their hosts file (C:\Windows\System32\drivers\etc\hosts) with this new altered host file.
 3(a)) once the hosts file is replaced, make sure to run the following command in cmd.exe as admin: 
@@ -21,3 +21,6 @@ this will apply the new hosts file. Alternatively, once the hosts file is replac
 5) run the server.
 6) players may now run achron, and create a game, and join that game.
 7) once the game has been finished, ideally the server should be restarted if more games are required.
+
+UPDATE:
+Games now display the correct number of players, correct number of max players, show when games are in progress, removes games that are finished, and removes games when the host leaves. However these features are only avaliable if you build the server from source; the release version does not include these features.
