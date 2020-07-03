@@ -34,7 +34,8 @@ namespace AchronWeb.packets
 
             //create a new game
             achronGame game = new achronGame();
-            game.currentPlayers = 1;
+            game.currentPlayers = new System.Collections.ArrayList();
+            game.currentPlayers.Add(user.username);
             game.maxPlayers = 8;
             game.gamePlayerHost = user.username;
             game.portA = 7014; //default, maybe the client will update this later?

@@ -29,7 +29,7 @@ namespace AchronWeb.packets
             {
                 content +=
                     game.Value.gameID + @"\" +
-                    game.Value.currentPlayers + @"\" +
+                    game.Value.currentPlayers.Count + @"\" +
                     game.Value.maxPlayers + @"\" +
                     game.Value.level + @"\" +
                     game.Value.host + @"\" +

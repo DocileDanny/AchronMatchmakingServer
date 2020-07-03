@@ -34,8 +34,7 @@ namespace Networking
                     byte[] data = new byte[socket.Available];
                     ns.Read(data, 0, socket.Available);
                     string decode = UTF8Encoding.UTF8.GetString(data, 0, data.Length);
-
-
+                    
                     string[] DataPackets = decode.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 
                     string[] args = DataPackets[0].Split(new char[] {' ', '?', '&' });
@@ -121,7 +120,8 @@ namespace Networking
                         }
                         else
                         {
-                            Console.WriteLine("create game.. [unknown user]");
+                            Console.WriteLine("create game.. [unknown user]?");
+                            return;
                         }
 
                         byte[] reply = AchronWeb.packets.createGamePacket.Handle(argList["OxO181"], argList["OxO2O1"], argList["OxO21O"], argList["OxO39O"], argList["OxO04O"], endPoint.Address.ToString());
@@ -132,8 +132,97 @@ namespace Networking
                         socket.Close();
                     }
 
-                    else if (argList.ContainsKey("Ox910O") && argList.ContainsKey("OxO04O"))
+                    //Join Game?
+                    else if (argList.ContainsKey("Ox910O") && argList.ContainsKey("OxO04O") && argList.Count == 2)
                     {
+                        string gameID = argList["Ox910O"];
+                        if (!long.TryParse(gameID, out long a)) { return; }
+
+                        AchronWeb.features.achronClient client = AchronWeb.features.consts.getUser(argList["OxO04O"]);
+                        if (client == null) { return; }
+                        string user = client.username;
+                        
+                        //Get the actionID.
+                        string action = argList["OxO04O"].Substring(argList["OxO04O"].Length - 7);
+
+                        string prettyAction = "unknown";
+                        switch (action)
+                        {
+                            case "62f9d01": //join game
+                                prettyAction = "join game? [62f9d01]";
+                                lock (AchronWeb.features.consts.gameList)
+                                {
+                                    if (AchronWeb.features.consts.gameList.ContainsKey(long.Parse(gameID)))
+                                    {
+                                        AchronWeb.features.achronGame game = AchronWeb.features.consts.gameList[long.Parse(gameID)];
+                                        game.currentPlayers.Add(user);
+                                        game.lastUpdate = AchronWeb.features.consts.GetTime();
+                                    }
+                                }
+                                break;
+                            case "0000001": //game start?
+                                prettyAction = "game start [0000001]";
+                                lock (AchronWeb.features.consts.gameList)
+                                {
+                                    if (AchronWeb.features.consts.gameList.ContainsKey(long.Parse(gameID)))
+                                    {
+                                        AchronWeb.features.achronGame game = AchronWeb.features.consts.gameList[long.Parse(gameID)];
+                                        if (game.ownerSESSID == AchronWeb.features.consts.getUser(argList["OxO04O"]).SESSID)
+                                        {
+                                            game.Progress = 1;
+                                            game.lastUpdate = AchronWeb.features.consts.GetTime();
+                                        }
+                                    }
+                                }
+                                break;
+                            case "62a870b": //leave a game
+                                prettyAction = "leave game [62a870b]";
+                                lock (AchronWeb.features.consts.gameList)
+                                {
+                                    if (AchronWeb.features.consts.gameList.ContainsKey(long.Parse(gameID)))
+                                    {
+                                        AchronWeb.features.achronGame game = AchronWeb.features.consts.gameList[long.Parse(gameID)];
+                                        if (game.ownerSESSID == AchronWeb.features.consts.getUser(argList["OxO04O"]).SESSID)
+                                        {
+                                            AchronWeb.features.consts.gameList.Remove(long.Parse(gameID));
+                                        }
+                                        else
+                                        {
+                                            game.currentPlayers.Remove(user);
+                                            game.lastUpdate = AchronWeb.features.consts.GetTime();
+                                        }
+                                    }
+                                }
+                                break;
+                            case "657b2cf":
+                                prettyAction = "game end [657b2cf]";
+                                lock (AchronWeb.features.consts.gameList)
+                                {
+                                    if (AchronWeb.features.consts.gameList.ContainsKey(long.Parse(gameID)))
+                                    {
+                                        AchronWeb.features.consts.gameList.Remove(long.Parse(gameID));                                        
+                                    }
+                                }
+                                break;
+                            case "0000000":
+                                prettyAction = "game ping [0000000]"; //game is still open
+                                lock (AchronWeb.features.consts.gameList)
+                                {
+                                    if (AchronWeb.features.consts.gameList.ContainsKey(long.Parse(gameID)))
+                                    {
+                                        AchronWeb.features.achronGame game = AchronWeb.features.consts.gameList[long.Parse(gameID)];
+                                        if (game.ownerSESSID == AchronWeb.features.consts.getUser(argList["OxO04O"]).SESSID)
+                                        {
+                                            game.lastUpdate = AchronWeb.features.consts.GetTime();
+                                        }
+                                    }
+                                }
+                                break;
+                        }
+
+                        Console.WriteLine(user + " is doing.. something. (" + prettyAction + "?) #" + gameID);
+                        
+
                         byte[] reply = AchronWeb.packets.okPacket.Handle();
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
@@ -142,94 +231,72 @@ namespace Networking
                         socket.Close();
                     }
 
-                    //This code doesn't work as expected at all.
-                    //Ox910O & OxO04O
-                    //Ox910O = gameID
-                    //Game is starting or ending (probably) - note: also fires when game is joined =/
-                    /*
-                    else if (argList.ContainsKey("Ox910O") && argList.ContainsKey("OxO04O"))
+                    //Leave Game?
+                    //Host tells the server a user has left the game, and who it was
+                    //probably a failsafe, in case the user left because of a game crash.
+                    else if (argList.ContainsKey("Ox910O") && argList.ContainsKey("OxO04O") && argList.ContainsKey("OxO02a") && argList.Count == 3)
                     {
-                        AchronWeb.features.achronClient user = AchronWeb.features.consts.getUser(argList["OxO04O"]);
 
-                        
+                        string gameID = argList["Ox910O"];
+                        if (!long.TryParse(gameID, out long a)) { return; }
 
-                        if (user == null) { Console.WriteLine("nullUSER: " + decode); break; }
-                        else
+                        AchronWeb.features.achronClient client = AchronWeb.features.consts.getUser(argList["OxO04O"]);
+                        if (client == null) { return; }
+                        string user = client.username;
+
+                        Console.WriteLine(user + " (host) says " + argList["OxO02a"] + " has left game #" + gameID + ".");
+
+                        lock (AchronWeb.features.consts.gameList)
                         {
-                            Console.WriteLine(user.username + ": " + decode);
-
-                            lock (AchronWeb.features.consts.gameList)
+                            if (AchronWeb.features.consts.gameList.ContainsKey(long.Parse(gameID)))
                             {
-                                Queue<long> endedGames = new Queue<long>();
+                                //remove the player from the game if he is in it.
+                                AchronWeb.features.achronGame game = AchronWeb.features.consts.gameList[long.Parse(gameID)];
+                                game.currentPlayers.Remove(argList["OxO02a"]);
+                                game.lastUpdate = AchronWeb.features.consts.GetTime();
                                 
-                                foreach (KeyValuePair<long, AchronWeb.features.achronGame> game in AchronWeb.features.consts.gameList)
-                                {
-                                    if (game.Value.ownerSESSID == user.SESSID && game.Key.ToString() == argList["Ox910O"])
-                                    {
-                                        //Game is ending/starting
-                                        Console.WriteLine("GAME " + game.Key + " has ended!");
-                                        Console.WriteLine("CONTENT: " + decode);
-                                        game.Value.lastUpdate = AchronWeb.features.consts.GetTime();
-                                        game.Value.Progress = 1;
-                                        endedGames.Enqueue(game.Key);
-                                    }
-                                }
-
-                                if (endedGames.Count != 0)
-                                {
-                                    while (endedGames.Count != 0)
-                                    {
-                                        long id = endedGames.Dequeue();
-                                        AchronWeb.features.consts.gameList.Remove(id);
-                                    }
-                                }
                             }
                         }
-                    }
-                    */
 
-                    ///Game status update.
-                    ///Ox910O - appears to be the gameID
-                    ///Ox411c - list of players in the game
-                    ///Ox50fa - no idea?
-                    ///OxO04O - SSID / Key
-                    /* For some reason, our server never causes this to be sent - so it is completely unhandled.
-                    else if (argList.ContainsKey("Ox910O") && argList.ContainsKey("Ox411c") && argList.ContainsKey("Ox50fa") && argList.ContainsKey("OxO04O"))
+                        byte[] reply = AchronWeb.packets.okPacket.Handle();
+                        ns.Write(reply, 0, reply.Length);
+                        ns.Flush();
+                        System.Threading.Thread.Sleep(500);
+                        ns.Close();
+                        socket.Close();
+                    }
+
+                    //End Game?
+                    else if (argList.ContainsKey("Ox910O") && //game ID
+                        argList.ContainsKey("Ox411c") && //User list
+                        argList.ContainsKey("OxO04O") && //user hash + misc data
+                        argList.ContainsKey("Ox50fa") && //Who knows, always 21855 apparently or 21853 ; could be win or loss.
+                        argList.Count == 4)
                     {
-                        AchronWeb.features.achronClient user = AchronWeb.features.consts.getUser(argList["OxO04O"]);
+                        string gameID = argList["Ox910O"];
+                        if (!long.TryParse(gameID, out long a)) { return; }
 
-                        if (user == null) { break; }
-                        else
+                        AchronWeb.features.achronClient client = AchronWeb.features.consts.getUser(argList["OxO04O"]);
+                        if (client == null) { return; }
+                        string user = client.username;
+
+                        Console.WriteLine(user + " is doing.. something? (end game?) with " + argList["Ox411c"] + " in game #" + gameID + " [" + argList.ContainsKey("Ox50fa") + "]");
+
+                        lock (AchronWeb.features.consts.gameList)
                         {
-                            lock (AchronWeb.features.consts.gameList)
+                            if (AchronWeb.features.consts.gameList.ContainsKey(long.Parse(gameID)))
                             {
-                                foreach (KeyValuePair<long, AchronWeb.features.achronGame> game in AchronWeb.features.consts.gameList)
-                                {
-                                    if (game.Value.ownerSESSID == user.SESSID && game.Key.ToString() == argList["Ox910O"])
-                                    {
-                                        //Game status update.
-                                        game.Value.lastUpdate = AchronWeb.features.consts.GetTime();
-
-                                        string[] players = argList["Ox411c"].Split(',');
-                                        int maxPlayers = players.Length;
-                                        int currentPlayers = 0;
-                                        foreach (string player in players)
-                                        {
-                                            if (player != " ")
-                                            {
-                                                currentPlayers++;
-                                            }
-                                        }
-
-                                        game.Value.maxPlayers = maxPlayers;
-                                        game.Value.currentPlayers = currentPlayers;
-                                        Console.WriteLine("GAME " + game.Key + " updated. (" + game.Value.currentPlayers + "/" + game.Value.maxPlayers + ")");
-                                    }
-                                }
+                                AchronWeb.features.consts.gameList.Remove(long.Parse(gameID));
                             }
                         }
+
+                        byte[] reply = AchronWeb.packets.okPacket.Handle();
+                        ns.Write(reply, 0, reply.Length);
+                        ns.Flush();
+                        System.Threading.Thread.Sleep(500);
+                        ns.Close();
+                        socket.Close();
                     }
-                    */
 
                     else
                     {

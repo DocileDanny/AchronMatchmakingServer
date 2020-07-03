@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,9 +23,9 @@ namespace AchronWeb.features
         public long lastUpdate;
 
         /// <summary>
-        /// Number of players in this game.
+        /// list of all players in this game.
         /// </summary>
-        public int currentPlayers;
+        public ArrayList currentPlayers;
 
         /// <summary>
         /// Max players in this game.
