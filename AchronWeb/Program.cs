@@ -12,7 +12,7 @@ namespace AchronWeb
     {
         static void Main(string[] args)
         {
-            Terminal.WriteTitle( new string[] { "Chronocloned", "The Achron Matchmaking Service", "v0.2", "By DocileDanny", "Special Thanks To: Lumarin" } );
+            Terminal.WriteTitle( new string[] { "Chronocloned", "The Achron Matchmaking Service", "v0.3a", "By DocileDanny", "Special Thanks To: Lumarin" } );
 
             try
             {
