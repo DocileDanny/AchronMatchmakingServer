@@ -28,6 +28,20 @@ namespace AchronWeb.packets
             //xO040 is the UID in this case
             //endPoint is the external IP for this client.
 
+            string val = OxO04O;
+            int maxplayerCount = 8;
+            if (val.Contains("6bb3171"))
+            {
+                //6bb317108429 06
+                int pCountIndex = val.IndexOf("6bb3171");
+                string sMaxPlayerCount = val.Substring(pCountIndex + 12, 2);
+
+                if (Int32.TryParse(sMaxPlayerCount, out int c))
+                {
+                    maxplayerCount = Int32.Parse(sMaxPlayerCount);
+                }
+            }
+
             //get the user who is trying to create the game
             achronClient user = consts.getUser(OxO04O);
             if (user == null) { return new byte[0]; }
@@ -36,7 +50,7 @@ namespace AchronWeb.packets
             achronGame game = new achronGame();
             game.currentPlayers = new System.Collections.ArrayList();
             game.currentPlayers.Add(user.username);
-            game.maxPlayers = 8;
+            game.maxPlayers = maxplayerCount;
             game.gamePlayerHost = user.username;
             game.portA = 7014; //default, maybe the client will update this later?
             game.portB = 7013; //default, maybe the client will update this later?

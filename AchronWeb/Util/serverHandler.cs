@@ -222,7 +222,6 @@ namespace Networking
 
                         Console.WriteLine(user + " is doing.. something. (" + prettyAction + "?) #" + gameID);
                         
-
                         byte[] reply = AchronWeb.packets.okPacket.Handle();
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
@@ -350,6 +349,22 @@ namespace Networking
             }
 
             Console.WriteLine("[Socket " + endPoint.ToString() + " closed]");
+        }
+
+        static int SearchBytes(byte[] haystack, byte[] needle)
+        {
+            var len = needle.Length;
+            var limit = haystack.Length - len;
+            for (var i = 0; i <= limit; i++)
+            {
+                var k = 0;
+                for (; k < len; k++)
+                {
+                    if (needle[k] != haystack[i + k]) break;
+                }
+                if (k == len) return i;
+            }
+            return -1;
         }
     }
 }
