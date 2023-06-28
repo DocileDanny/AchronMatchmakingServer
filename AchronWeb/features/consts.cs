@@ -28,8 +28,36 @@ namespace AchronWeb.features
         /// </summary>
         public static long gameCount = 0;
 
-        public static string errorPage =
-@"
+        public static string errorPage
+        {
+            get
+            {
+                string gameInfo = "";
+                foreach (KeyValuePair<long, achronGame> game in consts.gameList)
+                {
+                    gameInfo = gameInfo + "<tr>";
+                    gameInfo = gameInfo + "<td>" + game.Value.gameName + "</td>";
+                    gameInfo = gameInfo + "<td>" + game.Value.level.Replace("./levels/", "").Replace(".tsc", "") + " </td>";
+                    gameInfo = gameInfo + "<td>" + game.Value.gamePlayerHost + "</td>";
+                    gameInfo = gameInfo + "<td>";
+                    foreach (var s in game.Value.currentPlayers)
+                    {
+                        gameInfo = gameInfo + s + ", ";
+                    }
+                    if (game.Value.currentPlayers.Count > 0) { gameInfo = gameInfo.Substring(0, gameInfo.Length - 2); }
+                    gameInfo = gameInfo + "</td>";
+                    gameInfo = gameInfo + "</tr>";
+                }
+
+                string playersOnline = consts.clientList.Count + " player(s) online (";
+                foreach (var s in consts.clientList)
+                {
+                    playersOnline = playersOnline + s.Value.username + ", ";
+                }
+                if (consts.clientList.Count > 0) { playersOnline = playersOnline.Substring(0, playersOnline.Length - 2); }
+                playersOnline = playersOnline + ")";
+                return
+                @"
 <html>
 <style>
 body {
@@ -48,9 +76,28 @@ Seeing this page means your computer is correctly configured to access the Achro
 Please reconnect using the achron client in order to play multiplayer games. <br>
 <br />
 If you are attempting to access achrongame.com, and you have configured your hosts file to access the matchmaking service, you may need to restore the original host file, and flush your DNS to access the offical web page.
+<br />
+<br /><b>" + playersOnline + "</b>" +
+@"<br />
+<br />
+    <b>Active Games:</b>
+    <br />
+    <br />
+    <table border=""1"" width=""100%"">
+        <tr>            
+                 <td><b>Game Name</b></td>
+                 <td><b>Map</b></td>
+                 <td><b>Host</b></td>
+                 <td><b>Players</b></td>
+             </tr>"
++ gameInfo +
+@"
+</table>
 </div>
 </html>
 ";
+            }
+        }
 
         /// <summary>
         /// Get the user with the specified hash.
