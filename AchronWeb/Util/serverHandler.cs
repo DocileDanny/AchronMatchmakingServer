@@ -67,7 +67,7 @@ namespace Networking
                     else if (argList.ContainsKey("OxO02O") && argList.ContainsKey("OxO02a") && !argList.ContainsKey("OxO04O"))
                     {
                         Console.WriteLine("[WEB-CLIENT] User " + argList["OxO02O"] + " connecting..");
-                        byte[] reply = AchronWeb.packets.registerPacketA.Handle(argList["OxO02O"], argList["OxO02a"]);
+                        byte[] reply = AchronWeb.packets.registerPacketALegacy.Handle(argList["OxO02O"], argList["OxO02a"]);
                         ns.Write(reply, 0, reply.Length);
                         ns.Flush();
                         System.Threading.Thread.Sleep(500);
