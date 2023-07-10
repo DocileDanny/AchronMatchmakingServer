@@ -36,7 +36,11 @@ namespace AchronWeb.packets
             }
 
             string content =
-                client.SESSID + @"OK"; //the client version
+                client.SESSID + @"\\" + //SessID / unique ID
+                client.username +  //username
+                "5e1355173f1786." + consts.GetTime() +  //no idea what this is about
+                @"\\" + "" + //unknown mystery data that we shall leave blank for now.
+                "\\1.7.0.0"; //the client version
 
             consts.clientList.Add(client.SESSID, client);
 
